@@ -7,16 +7,6 @@ defmodule Garbagetake.Feed do
   alias Garbagetake.Post
 
   @doc """
-  Creates a post for the current user
-  """
-
-  def create_post(attrs \\ %{}) do
-    %Post{}
-    |> Post.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
   Returns all the saved posts
   """
 

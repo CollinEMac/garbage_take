@@ -21,6 +21,7 @@ defmodule GarbagetakeWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    get "/feed", FeedController, :feed
   end
 
   # Other scopes may use custom stacks.

@@ -64,12 +64,18 @@ defmodule GarbagetakeWeb.FeedLive do
   end
 
   def handle_event("create_post", %{"post-text" => post_text}, socket) do
-    Repo.insert(%Post{
-      user: socket.assigns.current_user.id,
-      text: post_text,
-      score: 0,
-      tags: %{}
-    })
+
+    # Repo.insert(%Post{
+    #   user: socket.assigns.current_user.id,
+    #   text: post_text,
+    #   score: 0,
+    #   tags: %{}
+    # })
+
+    Feed.create_or_update_post(
+      socket.assigns.current_user.id,
+      post_text
+    )
 
     {
       :noreply,

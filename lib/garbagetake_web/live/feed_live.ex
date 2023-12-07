@@ -27,6 +27,8 @@ defmodule GarbagetakeWeb.FeedLive do
           <th>SCORE</th>
           <th>TAGS</th>
           <th>POST DATE</th>
+          <th>upvote</th>
+          <th>downvote</th>
         </tr>
         <%= for post <- @posts do %>
           <tr>
@@ -47,6 +49,12 @@ defmodule GarbagetakeWeb.FeedLive do
             <td>
               <%= Date.to_iso8601(post.inserted_at) %>
             </td>
+            <td>
+              <button phx-click="upvote" phx-value-postid={post.id}>+</button>
+            </td>
+            <td>
+              <button phx-click="downvote" phx-value-postid={post.id}>-</button>
+            </td>
           </tr>
         <% end %>
       </table>
@@ -65,17 +73,32 @@ defmodule GarbagetakeWeb.FeedLive do
 
   def handle_event("create_post", %{"post-text" => post_text}, socket) do
 
-    # Repo.insert(%Post{
-    #   user: socket.assigns.current_user.id,
-    #   text: post_text,
-    #   score: 0,
-    #   tags: %{}
-    # })
-
     Feed.create_or_update_post(
       socket.assigns.current_user.id,
       post_text
     )
+
+    {
+      :noreply,
+      socket
+      |> assign(:posts, Feed.get_posts())
+    }
+  end
+
+  def handle_event("upvote", %{"postid" => post_id, "value" => _}, socket) do
+    Repo.get!(Post, post_id)
+    |> Post.increment_score()
+
+    {
+      :noreply,
+      socket
+      |> assign(:posts, Feed.get_posts())
+    }
+  end
+
+  def handle_event("downvote", %{"postid" => post_id, "value" => _}, socket) do
+    Repo.get!(Post, post_id)
+    |> Post.decrement_score()
 
     {
       :noreply,

@@ -7,33 +7,49 @@ defmodule GarbagetakeWeb.FeedLive do
   def render(assigns) do
     ~H"""
     <main>
-      <h1>Timeline</h1>
       <div class="flex justify-center">
         <form phx-submit="create_post">
-          <label>Post something!</label><br/>
           <input
             type="text"
             id="post-text"
             name="post-text"
+            placeholder="Post something!"
             required
           />
-          <button>Submit</button>
+          <button>Post!</button>
         </form>
       </div>
-      <div>
+      <h2>Timeline</h2>
+      <table>
+        <tr>
+          <th>USER</th>
+          <th>POST</th>
+          <th>SCORE</th>
+          <th>TAGS</th>
+          <th>POST DATE</th>
+        </tr>
         <%= for post <- @posts do %>
-          <div>
-            <p>
-              USER_ID <%= post.user %> :
+          <tr>
+            <td>
+              <%= post.user %>
+            </td>
+            <td>
               <%= post.text %>
-            </p>
-            <p>
-              SCORE <%= post.score %>
-              <%!-- <%= post.tags %> --%>
-            </p>
-          </div>
+            </td>
+            <td>
+              <%= post.score %>
+            </td>
+            <td>
+              <%= for tag <- post.tags do %>
+                <%= tag %>
+              <% end %>
+            </td>
+            <td>
+              <%= Date.to_iso8601(post.inserted_at) %>
+            </td>
+          </tr>
         <% end %>
-      </div>
+      </table>
     </main>
     """
   end
